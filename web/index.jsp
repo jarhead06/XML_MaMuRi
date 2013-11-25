@@ -1,4 +1,4 @@
-<%-- 
+<%--
     Document   : index
     Created on : 23 nov. 2013, 15:33:51
     Author     : Rudy
@@ -15,5 +15,7 @@
         <h1>Hello World!</h1>
         <p> test rudy </p>
         <p> test 2 </p>
+        <p> test 2 </p>
+        <p> coucou (bastien) </p>
     </body>
 </html>

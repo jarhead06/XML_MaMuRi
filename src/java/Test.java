@@ -8,6 +8,6 @@
  *
  * @author Rudy
  */
-public class ttt {
+public class Test {
     
 }

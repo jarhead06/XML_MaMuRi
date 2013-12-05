@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+   Build file for XML:DB Lexus implementation.
+
+Notes:
+   This is a build file for use with the Jakarta Ant java build tool.
+
+Howto build:
+
+   To build, run
+
+     cd src ; ant
+
+   in the directory where this file is located.
+
+   $Id: build.xml,v 1.5 2002/11/11 16:43:16 jbreedveld Exp $
+
+-->
+
+<project name="xmldb" default="main" basedir=".">
+
+  <!-- =================================================================== -->
+  <!-- Initializes the build process                                       -->
+  <!-- =================================================================== -->
+  <!-- default directory structure definitions -->
+  <property name="root.dir" value="."/>
+  <property name="src.dir" value="${root.dir}"/>
+  <property name="jar.dir" value="${src.dir}/lib"/>
+  <property name="build.dir" value="${root.dir}/build"/>
+  <property name="classes.dir" value="${build.dir}/classes"/>
+  <property name="docs.dir" value="${build.dir}/docs"/>
+  <property name="javadoc.pkgs" value="org.xmldb.*"/>
+  <property name="dist.dir" value="${root.dir}/dist"/>
+  <property name="downloads.dir" value="../downloads"/>
+  <property name="version" value="0.3"/>
+
+  <!-- classpath to use within project -->
+  <path id="project.class.path">
+    <!-- compiled classes directory -->
+    <pathelement location="${classes.dir}"/>
+
+    <!-- all jars in jar directory -->
+    <fileset dir="${jar.dir}">
+      <include name="*.jar"/>
+    </fileset>
+
+    <!-- system property, environment classpath -->
+    <pathelement path="${java.class.path}"/>
+  </path>
+
+  <target name="init">
+    <tstamp/>
+    <property name="jarname" value="xmldb-xupdate"/>
+    <property name="distname" value="xmldb-xupdate-${version}"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Prepares the build directory                                        -->
+  <!-- =================================================================== -->
+  <target name="prepare" depends="init">
+    <mkdir dir="${build.dir}"/>
+    <mkdir dir="${classes.dir}"/>
+    <mkdir dir="${docs.dir}"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Delete the build directory                                          -->
+  <!-- =================================================================== -->
+  <target name="clean" depends="init">
+    <delete dir="${build.dir}"/>
+    <delete dir="${dist.dir}"/>
+    <delete dir="${downloads.dir}"/>
+  </target>
+
+  <target name="main" depends="compile">
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles the XML:DB Lexus sources                                   -->
+  <!-- =================================================================== -->
+  <target name="compile" depends="prepare"
+          description="Compiles the Lexus source tree.">
+     <echo message="Compiling XML:DB Lexus"/>
+     <javac srcdir="${src.dir}"
+           destdir="${classes.dir}"
+           deprecation="off"
+           debug="on"
+           classpathref="project.class.path"
+     />
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Build JAR file of compiled sources                                  -->
+  <!-- =================================================================== -->
+  <target name="bin-jar" depends="compile">
+    <jar jarfile="${jar.dir}/${jarname}.jar"
+         basedir="${classes.dir}"
+    />
+  </target>
+
+  <target name="dist" depends="bin-jar, javadoc">
+    <property name="temp.dist.dir" value="${dist.dir}/xupdate-${version}"/>
+    <mkdir dir="${temp.dist.dir}"/>
+    <mkdir dir="${temp.dist.dir}/src"/>
+    <mkdir dir="${temp.dist.dir}/lib"/>
+    <mkdir dir="${temp.dist.dir}/docs"/>
+    <mkdir dir="${downloads.dir}"/>
+    <copy file="build.xml" todir="${temp.dist.dir}"/>
+    <copy todir="${temp.dist.dir}/lib">
+       <fileset dir="lib" includes="*.jar"/>
+    </copy>
+    <copy todir="${temp.dist.dir}/src">
+       <fileset dir=".">
+         <include name="**/*.java"/>
+         <exclude name="**/unittests/*"/>
+       </fileset>
+    </copy>
+    <copy todir="${temp.dist.dir}/docs">
+       <fileset dir="build/docs" includes="**/*"/>
+    </copy>
+    <zip zipfile="${downloads.dir}/${distname}.zip"
+         basedir="${dist.dir}"/>
+    <delete dir="${dist.dir}"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Build Full API docs                                                 -->
+  <!-- =================================================================== -->
+  <target name="javadoc" depends="prepare">
+    <javadoc packagenames="org.xmldb.*"
+             destdir="${docs.dir}"
+             public="true"
+             version="true"
+             author="true"
+             overview=""
+             doctitle="Lexus - XML:DB XUpdate Implementation"
+             header="XML:DB Lexus"
+             classpathref="project.class.path"
+             bottom="Copyright (c) 2002 The XML:DB Initiative All rights reserved">
+      <packageset dir="${src.dir}" defaultexcludes="yes">
+        <include name="org/xmldb/xupdate/lexus/**"/>
+      </packageset>
+    </javadoc>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Perform xupdate                                                     -->
+  <!-- usage: ant xupdate -Dupdate=update.xml -Ddocument=document.xml      -->
+  <!--                                                                     -->
+  <!-- =================================================================== -->
+  <target name="xupdate" depends="main">
+    <java classname="org.xmldb.xupdate.lexus.XUpdateQueryImpl" fork="yes">
+      <classpath refid="project.class.path"/>
+      <arg file="${update}"/>
+      <arg file="${document}"/>
+    </java>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Perform unittests                                                   -->
+  <!-- =================================================================== -->
+  <target name="test" depends="main">
+    <mkdir dir="${build.dir}/testreports"/>
+    <junit printsummary="yes" fork="yes">
+      <classpath refid="project.class.path"/>
+      <formatter type="xml"/>
+      <test name="org.xmldb.xupdate.unittests.XUpdateTests" todir="${build.dir}/testreports"/>
+    </junit>
+    <junitreport todir="${build.dir}/testreports">
+      <fileset dir="${build.dir}/testreports">
+        <include name="TEST-*.xml"/>
+      </fileset>
+      <report format="frames" todir="${build.dir}/testreports/html"/>
+    </junitreport>
+  </target>
+
+</project>

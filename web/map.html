@@ -10,11 +10,13 @@
         <script type="text/javascript"
                 src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDDoQlexj60hARI0Y07hWkrG4pDE5dwUjY&sensor=false">
         </script>
+        <link href="bootstrap/css/bootstrap.css" rel="stylesheet" media="screen">
+        <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
         <script type="text/javascript">
             function initialize() {
                 var mapOptions = {
                     center: new google.maps.LatLng(15, 15),
-                    zoom: 8
+                    zoom: 4
                 };
                 var map = new google.maps.Map(document.getElementById("map-canvas"),
                         mapOptions);
@@ -23,6 +25,11 @@
         </script>
     </head>
     <body>
-        <div id="map-canvas"/>
+        <div class="row">
+            <div class="col-md-8">        <div id="map-canvas"/>
+            </div>
+            <div class="col-md-4">.col-md-4</div>
+        </div>
+
     </body>
 </html>

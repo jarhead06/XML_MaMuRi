@@ -13,11 +13,8 @@
     </head>
     <body>
         <h1>Hello World!</h1>
-        <p> test rudy </p>
-        <p> test 2 </p>
-        <p> test 2 </p>
-        <p> coucou (bastien) </p>
-        <p> coucou2 (bastien) </p>
-        <p> La M5 ça saigne de la clio DCI </p>
+        <form action = "Servlet" method="post">
+              <input type="text" name= "nom">
+        </form>
     </body>
 </html>

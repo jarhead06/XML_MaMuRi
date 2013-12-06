@@ -1,0 +1,22 @@
+<!doctype html>
+<html>
+    <head>
+        <link rel='stylesheet' type='text/css' href='xmltree.css' />
+        <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.js'></script>
+        <script src='xmltree.js'></script>
+        <script src='custom.js'></script>
+
+    </head>
+    <body>
+        <span style="float:right">
+            <b>Looking for something specific ?   </b>
+            <input type="text" id="search_input" tabindex="-1" >
+        </span>
+        <div id="tree"> </div>
+        <script>
+            new XMLTree({
+                fpath: '../data/entries_hotels.xml',
+                container: '#tree'
+            });</script>
+    </body>
+</html>
